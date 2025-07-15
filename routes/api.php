@@ -10,10 +10,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //tes dev
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/kategori', [KategoriController::class, 'index']);
-    Route::get('/produk', [ProdukController::class, 'index']);
-    Route::get('/produk/{id}', [ProdukController::class, 'show']);
-    Route::post('/pesanan', [PesananController::class, 'store']);
-    Route::get('/pesanan', [PesananController::class, 'index']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('kategori', KategoriController::class);
+    Route::apiResource('/produk', [ProdukController::class, 'index']);
+    Route::apiResource('/produk/{id}', [ProdukController::class, 'show']);
+    Route::apiResource('/pesanan', [PesananController::class, 'store']);
+    Route::apiResource('/pesanan', [PesananController::class, 'index']);
+    Route::apiResource('/logout', [AuthController::class, 'logout']);
 });
