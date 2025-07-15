@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PesananController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+//contoh commit
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/kategori', [KategoriController::class, 'index']);
     Route::get('/produk', [ProdukController::class, 'index']);
