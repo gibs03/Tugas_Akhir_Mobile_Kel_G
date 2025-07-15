@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
 class KategoriProduk extends Model
 {
-    protected $table = 'kategori_produks'; // <--- ini disesuaikan
+    use HasApiTokens;
+
+    protected $table = 'kategori_produks';
     protected $fillable = ['nama_kategori'];
 
     public function produk()
