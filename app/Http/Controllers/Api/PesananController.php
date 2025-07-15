@@ -6,30 +6,47 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
 use App\Models\PesananDetail;
+use Illuminate\Support\Facades\DB;
 
 class PesananController extends Controller
 {
     public function store(Request $request) {
         $request->validate([
-            'items' => 'required|array'
+            'items' => 'required|array|min:1',
+            'items.*.produk_id' => 'required|exists:produks,id',
+            'items.*.jumlah' => 'required|integer|min:1',
+            'items.*.subtotal' => 'required|integer|min:0',
         ]);
 
-        $pesanan = Pesanan::create([
-            'user_id' => $request->user()->id,
-            'tanggal_pesan' => now(),
-            'status' => 'pending',
-        ]);
-
-        foreach ($request->items as $item) {
-            PesananDetail::create([
-                'pesanan_id' => $pesanan->id,
-                'produk_id' => $item['produk_id'],
-                'jumlah' => $item['jumlah'],
-                'subtotal' => $item['subtotal'],
+        DB::beginTransaction();
+        try {
+            $pesanan = Pesanan::create([
+                'user_id' => $request->user()->id,
+                'tanggal_pesan' => now(),
+                'status' => 'pending',
             ]);
-        }
 
-        return response()->json(['message' => 'Pesanan berhasil dibuat']);
+            foreach ($request->items as $item) {
+                $pesanan->detail()->create([
+                    'produk_id' => $item['produk_id'],
+                    'jumlah' => $item['jumlah'],
+                    'subtotal' => $item['subtotal'],
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Pesanan berhasil dibuat',
+                'data' => $pesanan->load('detail.produk')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Gagal membuat pesanan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function index(Request $request) {
