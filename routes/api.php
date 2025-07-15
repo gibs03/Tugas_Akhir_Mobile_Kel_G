@@ -8,12 +8,18 @@ use App\Http\Controllers\Api\PesananController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-//tes dev
+
+// Rute yang membutuhkan autentikasi token Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    // Semua fungsi CRUD untuk kategori
     Route::apiResource('kategori', KategoriController::class);
-    Route::apiResource('/produk', [ProdukController::class, 'index']);
-    Route::apiResource('/produk/{id}', [ProdukController::class, 'show']);
-    Route::apiResource('/pesanan', [PesananController::class, 'store']);
-    Route::apiResource('/pesanan', [PesananController::class, 'index']);
-    Route::apiResource('/logout', [AuthController::class, 'logout']);
+
+    // Semua fungsi CRUD untuk produk
+    Route::apiResource('produk', ProdukController::class);
+
+    // Semua fungsi CRUD untuk pesanan
+    Route::apiResource('pesanan', PesananController::class);
+
+    // Logout bukan resource, gunakan POST biasa
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
