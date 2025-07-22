@@ -81,5 +81,17 @@ class PesananController extends Controller
             'message' => 'Pesanan berhasil dihapus'
         ]);
     }
+
+    // Admin: Melihat semua pesanan
+    public function all(Request $request)
+    {
+        // Pastikan hanya admin yang bisa akses
+        if ($request->user()->role_id != 1) {
+            return response()->json(['message' => 'Akses ditolak'], 403);
+        }
+
+        $pesanan = Pesanan::with('detail.produk', 'user')->get();
+        return response()->json($pesanan);
+    }
 }
 

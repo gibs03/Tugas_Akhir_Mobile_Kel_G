@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Semua fungsi CRUD untuk pesanan
     Route::apiResource('pesanan', PesananController::class);
+    Route::get('/pesanan-all', [PesananController::class, 'all']); // hanya admin
 
     // Logout bukan resource, gunakan POST biasa
     Route::post('/logout', [AuthController::class, 'logout']);
