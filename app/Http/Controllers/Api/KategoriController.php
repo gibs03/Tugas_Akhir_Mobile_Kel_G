@@ -29,5 +29,15 @@ class KategoriController extends Controller
             'data' => $kategori
         ], 201);
     }
+
+    public function destroy($id)
+    {
+        $kategori = KategoriProduk::find($id);
+        if (!$kategori) {
+            return response()->json(['message' => 'Kategori tidak ditemukan'], 404);
+        }
+        $kategori->delete();
+        return response()->json(['message' => 'Kategori berhasil dihapus']);
+    }
 }
 
