@@ -32,7 +32,7 @@ class LaporanController extends Controller
 
             // Calculate total revenue (only from completed orders)
             $totalPendapatan = Pesanan::whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
-                ->whereIn('status', ['completed', 'selesai'])
+                ->whereIn('status', ['selesai'])
                 ->with('detail')
                 ->get()
                 ->sum(function ($pesanan) {
