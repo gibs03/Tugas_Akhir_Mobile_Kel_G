@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class PesananController extends Controller
 {
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'items' => 'required|array|min:1',
             'items.*.produk_id' => 'required|exists:produks,id',
@@ -49,7 +50,8 @@ class PesananController extends Controller
         }
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return Pesanan::with('detail.produk')->where('user_id', $request->user()->id)->get();
     }
 
@@ -93,5 +95,13 @@ class PesananController extends Controller
         $pesanan = Pesanan::with('detail.produk', 'user')->get();
         return response()->json($pesanan);
     }
-}
 
+
+    public function processPesanan(Request $request, $id)
+    {
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->status = 'diproses';
+        $pesanan->save();
+        return response()->json(['message' => 'Pesanan berhasil diproses']);
+    }
+}
