@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required'
         ]);
 
         $user = User::create([
@@ -28,7 +29,8 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Login gagal'], 401);
         }
@@ -39,7 +41,8 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token], 200);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logout berhasil']);
     }
