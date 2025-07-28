@@ -94,7 +94,7 @@ class LaporanController extends Controller
             $chartData = DB::table('pesanan')
                 ->select(
                     DB::raw('DATE(tanggal_pesan) as tanggal'),
-                    DB::raw('COUNT(*) as jumlah_pesanan'),
+                    DB::raw('COUNT(*) as jumlah'),
                     DB::raw('SUM(
                         (SELECT SUM(subtotal) FROM pesanan_detail WHERE pesanan_detail.pesanan_id = pesanan.id)
                     ) as total')
@@ -107,7 +107,7 @@ class LaporanController extends Controller
                 ->map(function ($item) {
                     return [
                         'tanggal' => $item->tanggal,
-                        'jumlah_pesanan' => (int) $item->jumlah_pesanan,
+                        'jumlah' => (int) $item->jumlah,
                         'total' => (float) ($item->total ?? 0),
                     ];
                 });
