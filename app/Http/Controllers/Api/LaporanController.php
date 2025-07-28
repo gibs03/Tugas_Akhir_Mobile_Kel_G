@@ -22,7 +22,7 @@ class LaporanController extends Controller
             $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
             $status = $request->get('status');
 
-            $query = Pesanan::whereBetween('tanggal_pesan', [$startDate, $endDate]);
+            $query = Pesanan::whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate]);
 
             if ($status && $status !== 'semua') {
                 $query->where('status', $status);
@@ -31,7 +31,7 @@ class LaporanController extends Controller
             $totalPesanan = $query->count();
 
             // Calculate total revenue (only from completed orders)
-            $totalPendapatan = Pesanan::whereBetween('tanggal_pesan', [$startDate, $endDate])
+            $totalPendapatan = Pesanan::whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
                 ->whereIn('status', ['completed', 'selesai'])
                 ->with('detail')
                 ->get()
@@ -65,7 +65,7 @@ class LaporanController extends Controller
             $status = $request->get('status');
 
             $query = Pesanan::with(['detail.produk', 'user'])
-                ->whereBetween('tanggal_pesan', [$startDate, $endDate])
+                ->whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
                 ->orderBy('tanggal_pesan', 'desc');
 
             if ($status && $status !== 'semua') {
@@ -73,7 +73,11 @@ class LaporanController extends Controller
             }
 
             $pesananList = $query->get();
-
+            // Format tanggal_pesan menjadi date (Y-m-d) saja
+            $pesananList->transform(function ($pesanan) {
+                $pesanan->tanggal_pesan = Carbon::parse($pesanan->tanggal_pesan)->format('Y-m-d');
+                return $pesanan;
+            });
             return response()->json($pesananList);
         } catch (\Exception $e) {
             return response()->json([
@@ -132,7 +136,7 @@ class LaporanController extends Controller
             $format = $request->get('format', 'pdf');
 
             $query = Pesanan::with(['detail.produk', 'user'])
-                ->whereBetween('tanggal_pesan', [$startDate, $endDate])
+                ->whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
                 ->orderBy('tanggal_pesan', 'desc');
 
             if ($status && $status !== 'semua') {
@@ -140,6 +144,11 @@ class LaporanController extends Controller
             }
 
             $pesananList = $query->get();
+            // Format tanggal_pesan menjadi date (Y-m-d) saja
+            $pesananList->transform(function ($pesanan) {
+                $pesanan->tanggal_pesan = Carbon::parse($pesanan->tanggal_pesan)->format('Y-m-d');
+                return $pesanan;
+            });
 
             // Calculate summary
             $totalPesanan = $pesananList->count();
