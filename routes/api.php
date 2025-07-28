@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pesanan', PesananController::class);
     Route::get('/pesanan-all', [PesananController::class, 'all']); // hanya admin
     Route::put('/pesanan/{id}/process', [PesananController::class, 'processPesanan']);
+    Route::put('/pesanan/{id}/tolak', [PesananController::class, 'tolakPesanan']);
     Route::put('/pesanan/{id}/terima', [PesananController::class, 'terimaPesanan']);
 
 

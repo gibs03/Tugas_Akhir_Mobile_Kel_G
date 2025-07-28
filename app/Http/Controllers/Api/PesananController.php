@@ -115,6 +115,14 @@ class PesananController extends Controller
         return response()->json(['message' => 'Pesanan berhasil diproses']);
     }
 
+    public function tolakPesanan(Request $request, $id)
+    {
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->status = 'ditolak';
+        $pesanan->save();
+        return response()->json(['message' => 'Pesanan berhasil ditolak']);
+    }
+
     public function terimaPesanan(Request $request, $id)
     {
         $pesanan = Pesanan::findOrFail($id);
