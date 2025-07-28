@@ -33,6 +33,16 @@ class PesananController extends Controller
                     'jumlah' => $item['jumlah'],
                     'subtotal' => $item['subtotal'],
                 ]);
+
+                // Kurangi stok produk
+                $produk = \App\Models\Produk::find($item['produk_id']);
+                if ($produk) {
+                    if ($produk->stok < $item['jumlah']) {
+                        throw new \Exception('Stok produk tidak mencukupi untuk produk ID: ' . $item['produk_id']);
+                    }
+                    $produk->stok -= $item['jumlah'];
+                    $produk->save();
+                }
             }
 
             DB::commit();
