@@ -104,4 +104,12 @@ class PesananController extends Controller
         $pesanan->save();
         return response()->json(['message' => 'Pesanan berhasil diproses']);
     }
+
+    public function terimaPesanan(Request $request, $id)
+    {
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->status = 'selesai';
+        $pesanan->save();
+        return response()->json(['message' => 'Pesanan berhasil diterima']);
+    }
 }
