@@ -99,11 +99,9 @@ class LaporanController extends Controller
                 ->select(
                     DB::raw('DATE(tanggal_pesan) as tanggal'),
                     DB::raw('COUNT(*) as jumlah'),
-                    DB::raw('SUM(
-                        (SELECT SUM(subtotal) FROM pesanan_details WHERE pesanan_details.pesanan_id = pesanans.id)
-                    ) as total')
+                    DB::raw('SUM((SELECT SUM(subtotal) FROM pesanan_details WHERE pesanan_details.pesanan_id = pesanans.id)) as total')
                 )
-                ->whereBetween('tanggal_pesan', [$startDate, $endDate])
+                ->whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
                 ->whereIn('status', ['completed', 'selesai'])
                 ->groupBy(DB::raw('DATE(tanggal_pesan)'))
                 ->orderBy('tanggal')
