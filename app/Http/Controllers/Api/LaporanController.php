@@ -110,7 +110,7 @@ class LaporanController extends Controller
                     return [
                         'tanggal' => $item->tanggal,
                         'jumlah' => (int) $item->jumlah,
-                        'total' => (float) ($item->total ?? 0),
+                        'total' => (float) ($item->subtotal ?? 0),
                     ];
                 });
 
