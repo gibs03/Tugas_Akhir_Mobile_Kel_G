@@ -117,7 +117,14 @@ class PesananController extends Controller
 
     public function tolakPesanan(Request $request, $id)
     {
-        $pesanan = Pesanan::findOrFail($id);
+        $pesanan = Pesanan::with('detail')->findOrFail($id);
+        foreach ($pesanan->detail as $detail) {
+            $produk = \App\Models\Produk::find($detail->produk_id);
+            if ($produk) {
+                $produk->stok += $detail->jumlah;
+                $produk->save();
+            }
+        }
         $pesanan->status = 'ditolak';
         $pesanan->save();
         return response()->json(['message' => 'Pesanan berhasil ditolak']);
