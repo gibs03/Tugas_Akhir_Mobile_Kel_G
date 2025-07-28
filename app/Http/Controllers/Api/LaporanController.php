@@ -102,7 +102,7 @@ class LaporanController extends Controller
                     DB::raw('SUM((SELECT SUM(subtotal) FROM pesanan_details WHERE pesanan_details.pesanan_id = pesanans.id)) as total')
                 )
                 ->whereBetween(DB::raw('DATE(tanggal_pesan)'), [$startDate, $endDate])
-                ->whereIn('status', ['completed', 'selesai'])
+                ->whereIn('status', ['selesai', 'selesai'])
                 ->groupBy(DB::raw('DATE(tanggal_pesan)'))
                 ->orderBy('tanggal')
                 ->get()
@@ -110,7 +110,7 @@ class LaporanController extends Controller
                     return [
                         'tanggal' => $item->tanggal,
                         'jumlah' => (int) $item->jumlah,
-                        'total' => (float) ($item->subtotal ?? 0),
+                        'total' => (float) ($item->total ?? 0),
                     ];
                 });
 
