@@ -91,12 +91,12 @@ class LaporanController extends Controller
             $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
             $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
 
-            $chartData = DB::table('pesanan')
+            $chartData = DB::table('pesanans')
                 ->select(
                     DB::raw('DATE(tanggal_pesan) as tanggal'),
                     DB::raw('COUNT(*) as jumlah'),
                     DB::raw('SUM(
-                        (SELECT SUM(subtotal) FROM pesanan_detail WHERE pesanan_detail.pesanan_id = pesanan.id)
+                        (SELECT SUM(subtotal) FROM pesanan_details WHERE pesanan_details.pesanan_id = pesanan.id)
                     ) as total')
                 )
                 ->whereBetween('tanggal_pesan', [$startDate, $endDate])
