@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProdukController;
 use App\Http\Controllers\Api\PesananController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\LaporanController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -26,6 +27,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pesanan/{id}/process', [PesananController::class, 'processPesanan']);
     Route::put('/pesanan/{id}/tolak', [PesananController::class, 'tolakPesanan']);
     Route::put('/pesanan/{id}/terima', [PesananController::class, 'terimaPesanan']);
+
+    Route::prefix('laporan')->group(function () {
+        Route::get('/summary', [LaporanController::class, 'getSummary']);
+        Route::get('/pesanan', [LaporanController::class, 'getPesananLaporan']);
+        Route::get('/chart', [LaporanController::class, 'getChartData']);
+        Route::get('/export', [LaporanController::class, 'exportLaporan']);
+    });
 
 
     // Logout bukan resource, gunakan POST biasa
